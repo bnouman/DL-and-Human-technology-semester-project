@@ -65,10 +65,6 @@ pip install -r requirements.txt
 
 If you don’t have a `requirements.txt`, you can generate one with:
 
-```bash
-pip freeze > requirements.txt
-```
-
 ---
 
 ## ▶ How to Run
