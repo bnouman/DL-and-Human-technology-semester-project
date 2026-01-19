@@ -27,7 +27,7 @@ This project uses the Rotten Tomatoes movie review dataset (Pang and Lee, 2005),
 
 # Install required packages
 
-!pip install -q transformers datasets torch accelerate evaluate scikit-learn
+# Dependencies are installed via requirements.txt
 
 # Import libraries
 import torch
