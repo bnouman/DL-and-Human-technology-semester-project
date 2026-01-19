@@ -46,6 +46,11 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import random
 import warnings
 warnings.filterwarnings('ignore')
+import os
+# Detect if running in CI environment
+IS_CI = os.getenv("CI", "false").lower() == "true"
+FORCE_TRAIN = os.getenv("FORCE_TRAIN", "false").lower() == "true"
+
 
 # Set random seeds for reproducibility
 def set_seed(seed=42):
