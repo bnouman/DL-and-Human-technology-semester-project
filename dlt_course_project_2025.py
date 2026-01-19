@@ -299,16 +299,19 @@ training_args = TrainingArguments(
 gen_model = AutoModelForCausalLM.from_pretrained(gen_model_name).to(device)
 
 # Initialize trainer
-trainer = Trainer(
-    model=gen_model,
-    args=training_args,
-    train_dataset=gen_train_dataset,
-    eval_dataset=gen_val_dataset,
-)
+if IS_CI and not FORCE_TRAIN:
+    print("Skipping Trainer.train() in CI environment")
+else:
+    trainer = Trainer(
+        model=gen_model,
+        args=training_args,
+        train_dataset=gen_train_dataset,
+        eval_dataset=gen_val_dataset,
+    )
 
-# Model training
-print("\nTraining generative model...")
-trainer.train()
+    # Model training
+    print("\nTraining generative model...")
+    trainer.train()
 
 print("\nTraining complete!")
 
@@ -431,15 +434,18 @@ bert_training_args = TrainingArguments(
     seed=42
 )
 
-bert_trainer = Trainer(
-    model=bert_model,
-    args=bert_training_args,
-    train_dataset=bert_train_dataset,
-    eval_dataset=bert_val_dataset,
-    compute_metrics=compute_metrics,
-)
+if IS_CI and not FORCE_TRAIN:
+    print("Skipping Trainer.train() in CI environment")
+else:
+    bert_trainer = Trainer(
+        model=bert_model,
+        args=bert_training_args,
+        train_dataset=bert_train_dataset,
+        eval_dataset=bert_val_dataset,
+        compute_metrics=compute_metrics,
+    )
 
-bert_trainer.train()
+    bert_trainer.train()
 
 print("Training complete!")
 
@@ -537,15 +543,18 @@ gen2_training_args = TrainingArguments(
     seed=42
 )
 
-gen2_trainer = Trainer(
-    model=gen2_model,
-    args=gen2_training_args,
-    train_dataset=gen2_train_dataset,
-    eval_dataset=gen2_val_dataset,
-)
+if IS_CI and not FORCE_TRAIN:
+    print("Skipping Trainer.train() in CI environment")
+else:
+    gen2_trainer = Trainer(
+        model=gen2_model,
+        args=gen2_training_args,
+        train_dataset=gen2_train_dataset,
+        eval_dataset=gen2_val_dataset,
+    )
 
-print("\nTraining Model")
-gen2_trainer.train()
+    print("\nTraining Model")
+    gen2_trainer.train()
 
 """##### 6.1.2.3 Evaluation"""
 
@@ -628,16 +637,19 @@ print(f"Batch size: {training_args.per_device_train_batch_size}")
 print(f"Learning rate: {training_args.learning_rate}")
 print(f"Mixed precision (FP16): {training_args.fp16}")
 
-trainer = Trainer(
-    model=bert_model,
-    args=training_args,
-    train_dataset=bert_train_dataset,
-    eval_dataset=bert_val_dataset,
-    compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
-)
+if IS_CI and not FORCE_TRAIN:
+    print("Skipping Trainer.train() in CI environment")
+else:
+    trainer = Trainer(
+        model=bert_model,
+        args=training_args,
+        train_dataset=bert_train_dataset,
+        eval_dataset=bert_val_dataset,
+        compute_metrics=compute_metrics,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
+    )
 
-train_result = trainer.train()
+    train_result = trainer.train()
 
 print('Training Completed.')
 
@@ -733,16 +745,19 @@ print(f"Batch size: {training_args.per_device_train_batch_size}")
 print(f"Learning rate: {training_args.learning_rate}")
 print(f"Mixed precision (FP16): {training_args.fp16}")
 
-trainer = Trainer(
-    model=bert_model,
-    args=training_args,
-    train_dataset=bert_train_dataset,
-    eval_dataset=bert_val_dataset,
-    compute_metrics=compute_metrics,
-    callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
-)
+if IS_CI and not FORCE_TRAIN:
+    print("Skipping Trainer.train() in CI environment")
+else:
+    trainer = Trainer(
+        model=bert_model,
+        args=training_args,
+        train_dataset=bert_train_dataset,
+        eval_dataset=bert_val_dataset,
+        compute_metrics=compute_metrics,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
+    )
 
-train_result = trainer.train()
+    train_result = trainer.train()
 
 print('Training Completed.')
 
