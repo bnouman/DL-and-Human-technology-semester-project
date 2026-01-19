@@ -27,7 +27,7 @@ This project uses the Rotten Tomatoes movie review dataset (Pang and Lee, 2005),
 
 # Install required packages
 
-!pip install -q transformers datasets torch accelerate evaluate scikit-learn
+# Dependencies are installed via requirements.txt
 
 # Import libraries
 import torch
@@ -46,6 +46,11 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import random
 import warnings
 warnings.filterwarnings('ignore')
+import os
+# Detect if running in CI environment
+IS_CI = os.getenv("CI", "false").lower() == "true"
+FORCE_TRAIN = os.getenv("FORCE_TRAIN", "false").lower() == "true"
+
 
 # Set random seeds for reproducibility
 def set_seed(seed=42):
@@ -306,11 +311,13 @@ trainer = Trainer(
     eval_dataset=gen_val_dataset,
 )
 
-# Model training
-print("\nTraining generative model...")
-trainer.train()
-
-print("\nTraining complete!")
+if IS_CI and not FORCE_TRAIN:
+    print("CI detected - skipping training")
+else:
+    # Model training
+    print("\nTraining generative model...")
+    trainer.train()
+    print("\nTraining complete!")
 
 """### 4.3. Evaluation on test set"""
 
@@ -432,16 +439,18 @@ bert_training_args = TrainingArguments(
 )
 
 bert_trainer = Trainer(
-    model=bert_model,
-    args=bert_training_args,
-    train_dataset=bert_train_dataset,
-    eval_dataset=bert_val_dataset,
-    compute_metrics=compute_metrics,
-)
+        model=bert_model,
+        args=bert_training_args,
+        train_dataset=bert_train_dataset,
+        eval_dataset=bert_val_dataset,
+        compute_metrics=compute_metrics,
+    )
 
-bert_trainer.train()
-
-print("Training complete!")
+if IS_CI and not FORCE_TRAIN:
+    print("CI detected - skipping training")
+else:
+    bert_trainer.train()
+    print("Training complete!")
 
 """### 5.3 Evaluation on test set"""
 
@@ -544,8 +553,11 @@ gen2_trainer = Trainer(
     eval_dataset=gen2_val_dataset,
 )
 
-print("\nTraining Model")
-gen2_trainer.train()
+if IS_CI and not FORCE_TRAIN:
+    print("CI detected - skipping training")
+else:
+    print("\nTraining Model")
+    gen2_trainer.train()
 
 """##### 6.1.2.3 Evaluation"""
 
@@ -637,7 +649,10 @@ trainer = Trainer(
     callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
 )
 
-train_result = trainer.train()
+if IS_CI and not FORCE_TRAIN:
+    print("CI detected - skipping training")
+else:
+    train_result = trainer.train()
 
 print('Training Completed.')
 
@@ -742,7 +757,10 @@ trainer = Trainer(
     callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
 )
 
-train_result = trainer.train()
+if IS_CI and not FORCE_TRAIN:
+    print("CI detected - skipping training")
+else:
+    train_result = trainer.train()
 
 print('Training Completed.')
 
